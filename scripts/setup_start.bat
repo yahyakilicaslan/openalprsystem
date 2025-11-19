@@ -14,6 +14,9 @@ echo # Evo Teknoloji Plaka Tanima Sistemi Kurulum Sihirbazi     #
 echo #############################################################
 echo.
 
+REM Set the script's directory
+set "SCRIPT_DIR=%~dp0"
+
 REM Check for Chocolatey
 where choco >nul 2>&1
 if %errorlevel% neq 0 (
@@ -31,7 +34,7 @@ echo # Bagimliliklar kuruldu, projenin kurulumuna baslaniyor... #
 echo #############################################################
 echo.
 
-call install_dependencies.bat
+call "%SCRIPT_DIR%install_dependencies.bat"
 
 echo.
 echo #############################################################
@@ -39,8 +42,8 @@ echo # Kurulum tamamlandi! Sunucular baslatiliyor...           #
 echo #############################################################
 echo.
 
-start "Backend" cmd /c run_backend.bat
-start "Frontend" cmd /c run_frontend.bat
+start "Backend" cmd /c "%SCRIPT_DIR%run_backend.bat"
+start "Frontend" cmd /c "%SCRIPT_DIR%run_frontend.bat"
 
 echo.
 echo Kurulum tamamlandi ve sunucular baslatildi.
