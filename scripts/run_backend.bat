@@ -1,11 +1,33 @@
 @echo off
-echo Starting FastAPI backend server...
+setlocal
+echo ==========================================================
+echo           FastAPI Backend Sunucusunu Baslatma
+echo ==========================================================
+echo.
 
-REM Change directory to the script's location, then to the backend folder
-cd /d "%~dp0..
-cd backend"
+REM Bu betigin bulundugu klasoru bul (scripts klasoru)
+set "SCRIPT_DIR=%~dp0"
+echo Betik klasoru: %SCRIPT_DIR%
 
-echo Running uvicorn in %cd%...
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+REM Projenin ana klasorune git (scripts klasorunun bir ust dizini)
+set "ROOT_DIR=%SCRIPT_DIR%.."
+cd /d "%ROOT_DIR%"
+echo Proje ana klasoru: %CD%
+echo.
 
+echo Backend klasorune geciliyor...
+cd backend
+echo Mevcut klasor: %CD%
+echo.
+
+echo Uvicorn sunucusu baslatiliyor...
+echo Komut: python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+echo.
+
+python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+echo.
+echo Sunucu calisirken loglar bu ekranda gorunecektir.
+echo Kapatmak icin CTRL+C tusuna basip pencereyi kapatin.
+echo.
 pause

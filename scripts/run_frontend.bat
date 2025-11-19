@@ -1,11 +1,33 @@
 @echo off
-echo Starting React frontend development server...
+setlocal
+echo ==========================================================
+echo           React Frontend Sunucusunu Baslatma
+echo ==========================================================
+echo.
 
-REM Change directory to the script's location, then to the frontend folder
-cd /d "%~dp0..
-cd frontend"
+REM Bu betigin bulundugu klasoru bul (scripts klasoru)
+set "SCRIPT_DIR=%~dp0"
+echo Betik klasoru: %SCRIPT_DIR%
 
-echo Running npm run dev in %cd%...
+REM Projenin ana klasorune git (scripts klasorunun bir ust dizini)
+set "ROOT_DIR=%SCRIPT_DIR%.."
+cd /d "%ROOT_DIR%"
+echo Proje ana klasoru: %CD%
+echo.
+
+echo Frontend klasorune geciliyor...
+cd frontend
+echo Mevcut klasor: %CD%
+echo.
+
+echo Gelistirme sunucusu baslatiliyor...
+echo Komut: npm run dev
+echo.
+
 npm run dev
 
+echo.
+echo Sunucu calisirken loglar bu ekranda gorunecektir.
+echo Kapatmak icin CTRL+C tusuna basip pencereyi kapatin.
+echo.
 pause
