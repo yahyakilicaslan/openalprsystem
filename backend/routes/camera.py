@@ -1,15 +1,17 @@
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.responses import JSONResponse
 from typing import List
-from ..database import database
-from ..database.models import Camera
+from backend.database import database
+from backend.database.models import Camera
 
 router = APIRouter()
 
 @router.post("/", response_description="Add new camera", response_model=Camera)
 async def create_camera(camera: Camera = Body(...)):
-    camera = await database.camera_collection.insert_one(camera.dict(by_alias=True))
-    new_camera = await database.camera_collection.find_one({"_id": camera.inserted_id})
+    camera_dict = camera.dict(by_alias=True)
+    camera_dict['_id'] = str(camera_dict['_id']) # Convert ObjectId to string
+    db_camera = await database.camera_collection.insert_one(camera_dict)
+    new_camera = await database.camera_collection.find_one({"_id": db_camera.inserted_id})
     return new_camera
 
 @router.get("/", response_description="List all cameras", response_model=List[Camera])
@@ -25,10 +27,11 @@ async def show_camera(id: str):
 
 @router.put("/{id}", response_description="Update a camera", response_model=Camera)
 async def update_camera(id: str, camera: Camera = Body(...)):
-    camera = {k: v for k, v in camera.dict(by_alias=True).items() if v is not None}
+    camera_dict = {k: v for k, v in camera.dict(by_alias=True).items() if v is not None}
+    camera_dict.pop('_id', None) # Don't update the _id
 
-    if len(camera) >= 1:
-        update_result = await database.camera_collection.update_one({"_id": id}, {"$set": camera})
+    if len(camera_dict) >= 1:
+        update_result = await database.camera_collection.update_one({"_id": id}, {"$set": camera_dict})
 
         if update_result.modified_count == 1:
             if (

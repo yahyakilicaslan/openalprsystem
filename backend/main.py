@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from routes import site as site_router
-from routes import plate as plate_router
-from routes import door as door_router
-from routes import camera as camera_router
+from backend.routes import site as site_router
+from backend.routes import plate as plate_router
+from backend.routes import door as door_router
+from backend.routes import camera as camera_router
 
 app = FastAPI(title="Evo Teknoloji Plaka Tanıma Sistemi", version="1.0.0")
 
@@ -33,4 +33,4 @@ def read_root():
     return {"message": "Evo Teknoloji ANPR API'sine hoş geldiniz!"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)

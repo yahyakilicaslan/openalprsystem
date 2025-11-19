@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.responses import JSONResponse
 from typing import List
-from ..database import database
-from ..database.models import Plate
+from backend.database import database
+from backend.database.models import Plate
 
 router = APIRouter()
 
@@ -13,8 +13,10 @@ async def create_plate(plate: Plate = Body(...)):
     if plate_count >= 3:
         raise HTTPException(status_code=400, detail="An apartment can have a maximum of 3 plates.")
 
-    plate = await database.plate_collection.insert_one(plate.dict(by_alias=True))
-    new_plate = await database.plate_collection.find_one({"_id": plate.inserted_id})
+    plate_dict = plate.dict(by_alias=True)
+    plate_dict['_id'] = str(plate_dict['_id']) # Convert ObjectId to string
+    db_plate = await database.plate_collection.insert_one(plate_dict)
+    new_plate = await database.plate_collection.find_one({"_id": db_plate.inserted_id})
     return new_plate
 
 @router.get("/", response_description="List all plates", response_model=List[Plate])
@@ -30,10 +32,11 @@ async def show_plate(id: str):
 
 @router.put("/{id}", response_description="Update a plate", response_model=Plate)
 async def update_plate(id: str, plate: Plate = Body(...)):
-    plate = {k: v for k, v in plate.dict(by_alias=True).items() if v is not None}
+    plate_dict = {k: v for k, v in plate.dict(by_alias=True).items() if v is not None}
+    plate_dict.pop('_id', None) # Don't update the _id
 
-    if len(plate) >= 1:
-        update_result = await database.plate_collection.update_one({"_id": id}, {"$set": plate})
+    if len(plate_dict) >= 1:
+        update_result = await database.plate_collection.update_one({"_id": id}, {"$set": plate_dict})
 
         if update_result.modified_count == 1:
             if (

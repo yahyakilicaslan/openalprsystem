@@ -15,16 +15,12 @@ cd /d "%ROOT_DIR%"
 echo Proje ana klasoru: %CD%
 echo.
 
-echo Backend klasorune geciliyor...
-cd backend
-echo Mevcut klasor: %CD%
+echo Uvicorn sunucusu projenin ana klasorunden baslatiliyor...
+echo Bu, Python'un paketleri dogru bulmasi icin gereklidir.
+echo Komut: python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 echo.
 
-echo Uvicorn sunucusu baslatiliyor...
-echo Komut: python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-echo.
-
-python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 
 echo.
 echo Sunucu calisirken loglar bu ekranda gorunecektir.
